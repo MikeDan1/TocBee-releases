@@ -1,0 +1,502 @@
+<meta charset="utf-8">
+<title>TocBee</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: eine Seite, ruhige Spalte (max. 1080px), Abschnitte Anleitung → Versionen → Roadmap → Änderungen.
+   Farben und Tiefe übernommen aus dem App-Designsystem «Honey». */
+:root {
+  --bg: #fbf6ea;
+  --surface: #ffffff;
+  --surface-2: #fbf4e4;
+  --line: #efe3c8;
+  --fg: #211a10;
+  --fg-2: #6f624c;
+  --fg-3: #a5977b;
+  --honey: #f5a300;
+  --honey-deep: #b86a00;
+  --honey-soft: #fff3cf;
+  --btn-a: #fff1c2;
+  --btn-b: #ffe08a;
+  --btn-line: #f3d47a;
+  --major: #b8452e;
+  --major-soft: #fde7e0;
+  --minor: #2f6fb3;
+  --minor-soft: #e3eefb;
+  --patch: #3d8a4e;
+  --patch-soft: #e5f3e3;
+  --idea: #7b6a52;
+  --idea-soft: #f1ebe0;
+  --shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 2px 4px rgba(90,55,0,.05), 0 14px 30px -12px rgba(130,75,0,.18);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14110c; --surface: #1e1912; --surface-2: #251f16; --line: #352c1f;
+    --fg: #f8f0dd; --fg-2: #bdae8f; --fg-3: #85785d;
+    --honey: #ffb800; --honey-deep: #ffc94a; --honey-soft: rgba(255,184,0,.12);
+    --btn-a: #f2d27a; --btn-b: #e3b648; --btn-line: #c99a2e;
+    --major: #ff9a80; --major-soft: rgba(212,68,46,.2);
+    --minor: #8fbaf0; --minor-soft: rgba(47,111,179,.22);
+    --patch: #8fd49a; --patch-soft: rgba(61,138,78,.22);
+    --idea: #cdbb9d; --idea-soft: rgba(205,187,157,.14);
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 14px 30px -12px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14110c; --surface: #1e1912; --surface-2: #251f16; --line: #352c1f;
+  --fg: #f8f0dd; --fg-2: #bdae8f; --fg-3: #85785d;
+  --honey: #ffb800; --honey-deep: #ffc94a; --honey-soft: rgba(255,184,0,.12);
+  --btn-a: #f2d27a; --btn-b: #e3b648; --btn-line: #c99a2e;
+  --major: #ff9a80; --major-soft: rgba(212,68,46,.2);
+  --minor: #8fbaf0; --minor-soft: rgba(47,111,179,.22);
+  --patch: #8fd49a; --patch-soft: rgba(61,138,78,.22);
+  --idea: #cdbb9d; --idea-soft: rgba(205,187,157,.14);
+  --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 14px 30px -12px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font: 16px/1.6 var(--font);
+  -webkit-font-smoothing: antialiased;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 66 0 50V18L28 2l28 16v32L28 66zm0 32V66m0-64V-30' fill='none' stroke='%23d98200' stroke-opacity='0.06' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.025em; line-height: 1.15; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(26px, 4vw, 34px); }
+h3 { font-size: 18px; }
+p { margin: 0; }
+a { color: var(--honey-deep); }
+:focus-visible { outline: 3px solid var(--honey); outline-offset: 2px; border-radius: 6px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3); }
+.lead { color: var(--fg-2); font-size: 18px; max-width: 62ch; }
+kbd { font: 600 13px var(--font); padding: 2px 8px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 0 var(--line); white-space: nowrap; }
+
+/* Kopfzeile */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; backdrop-filter: blur(14px); background: color-mix(in srgb, var(--bg) 82%, transparent); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 18px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -.03em; color: var(--fg); text-decoration: none; }
+.brand .bee { color: var(--honey); }
+.nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+.nav a { color: var(--fg-2); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+.nav a:hover { background: var(--honey-soft); color: var(--fg); }
+
+/* Einstieg */
+.hero { padding-block: 56px 40px; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; align-items: center; }
+.hero h1 { font-size: clamp(36px, 6vw, 56px); margin: 10px 0 16px; }
+.hero h1 em { font-style: normal; background: linear-gradient(140deg, #f5b300, #e08600); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 650; background: var(--surface); border: 1px solid var(--line); color: var(--fg-2); }
+.pill.version { background: linear-gradient(180deg, var(--btn-a), var(--btn-b)); border-color: var(--btn-line); color: #2b1f05; }
+.preview { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); padding: 20px; display: grid; gap: 14px; }
+.preview .bar { display: flex; gap: 6px; }
+.preview .bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.preview .now { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; }
+.ring { width: 132px; height: 132px; }
+.ring text { font: 800 26px var(--font-display); fill: var(--fg); font-variant-numeric: tabular-nums; }
+.ring .sub { font: 600 10px var(--font); fill: var(--fg-3); }
+.agenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.agenda li { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-radius: 10px; }
+.agenda li.cur { background: var(--honey-soft); font-weight: 700; }
+.agenda li span:last-child { margin-left: auto; color: var(--fg-3); font-variant-numeric: tabular-nums; font-size: 13px; }
+.agenda .d { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 800; background: var(--surface-2); color: var(--fg-3); flex-shrink: 0; }
+.agenda .done .d { background: var(--patch); color: #fff; }
+.agenda .cur .d { background: linear-gradient(180deg, var(--btn-a), var(--btn-b)); color: #2b1f05; }
+
+section { padding-block: 56px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 28px; }
+
+/* Anleitung */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: step; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 10px; align-content: start; }
+.step .n { counter-increment: step; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: linear-gradient(180deg, var(--btn-a), var(--btn-b)); border: 1px solid var(--btn-line); color: #2b1f05; }
+.step .n::before { content: counter(step); }
+.step p, .step li { color: var(--fg-2); font-size: 15px; }
+.step ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.step strong { color: var(--fg); }
+.extras { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+.panel { background: var(--surface-2); border: 1px solid var(--line); border-radius: 18px; padding: 20px; min-width: 0; }
+.panel h3 { margin-bottom: 12px; }
+.keys { width: 100%; border-collapse: collapse; font-size: 15px; }
+.keys td { padding: 7px 0; border-top: 1px solid var(--line); }
+.keys tr:first-child td { border-top: 0; }
+.keys td:first-child { width: 120px; }
+.facts { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--fg-2); font-size: 15px; }
+
+/* Versionierung */
+.anatomy { display: flex; align-items: baseline; justify-content: center; gap: 4px; font: 800 clamp(52px, 10vw, 88px)/1 var(--font-display); letter-spacing: -.03em; margin: 8px 0 28px; font-variant-numeric: tabular-nums; }
+.anatomy .seg { padding: 4px 14px; border-radius: 18px; transition: background .2s, transform .2s; cursor: default; }
+.anatomy .dot { color: var(--fg-3); }
+.anatomy .seg.major { color: var(--major); } .anatomy .seg.minor { color: var(--minor); } .anatomy .seg.patch { color: var(--patch); }
+.anatomy .seg.on.major { background: var(--major-soft); } .anatomy .seg.on.minor { background: var(--minor-soft); } .anatomy .seg.on.patch { background: var(--patch-soft); }
+.levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.level { border-radius: 18px; padding: 20px; border: 1px solid var(--line); background: var(--surface); display: grid; gap: 10px; align-content: start; transition: transform .2s, box-shadow .2s; }
+.level.on { transform: translateY(-3px); box-shadow: var(--shadow); }
+.level .tag { justify-self: start; }
+.level p { color: var(--fg-2); font-size: 15px; }
+.level .ex { font-family: var(--mono); font-size: 14px; color: var(--fg); }
+.tag { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 750; letter-spacing: .02em; }
+.tag.major { background: var(--major-soft); color: var(--major); }
+.tag.minor { background: var(--minor-soft); color: var(--minor); }
+.tag.patch { background: var(--patch-soft); color: var(--patch); }
+.tag.idea { background: var(--idea-soft); color: var(--idea); }
+
+/* Roadmap */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.filters button { font: 650 14px var(--font); height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg-2); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: linear-gradient(180deg, var(--btn-a), var(--btn-b)); border-color: var(--btn-line); color: #2b1f05; }
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 14px; }
+.timeline::before { content: ""; position: absolute; left: 19px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+.rm { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; }
+.rm .node { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line); z-index: 1; }
+.rm .node::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--fg-3); }
+.rm.released .node { border-color: var(--patch); } .rm.released .node::after { background: var(--patch); }
+.rm.next .node { border-color: var(--honey); box-shadow: 0 0 0 5px var(--honey-soft); } .rm.next .node::after { background: var(--honey); }
+.rm .card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px; min-width: 0; }
+.rm.next .card { box-shadow: var(--shadow); border-color: var(--btn-line); }
+.rm .head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
+.rm .v { font: 800 20px var(--font-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.rm .t { font-weight: 700; }
+.rm .st { margin-left: auto; font-size: 13px; font-weight: 650; color: var(--fg-3); }
+.rm.released .st { color: var(--patch); } .rm.next .st { color: var(--honey-deep); }
+.rm ul { margin: 0; padding-left: 18px; color: var(--fg-2); font-size: 15px; display: grid; gap: 3px; }
+.empty-filter { color: var(--fg-3); padding: 12px 0; }
+
+/* Änderungen */
+.log { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px 24px; display: grid; gap: 10px; }
+.log .head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.log ul { margin: 0; padding-left: 18px; color: var(--fg-2); display: grid; gap: 4px; }
+
+footer { padding-block: 32px 48px; color: var(--fg-3); font-size: 14px; border-top: 1px solid var(--line); }
+
+@media (max-width: 860px) {
+  .hero .wrap, .extras { grid-template-columns: minmax(0, 1fr); }
+  .steps, .levels { grid-template-columns: minmax(0, 1fr); }
+  .nav a { padding: 6px 8px; }
+}
+@media (max-width: 480px) {
+  .preview .now { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .top .wrap { flex-wrap: wrap; }
+  .nav { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#start" aria-label="TocBee – zum Anfang">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".5" stop-color="#FFB800"/><stop offset="1" stop-color="#EE8400"/></linearGradient>
+          <clipPath id="lb"><ellipse cx="32" cy="35" rx="10" ry="13"/></clipPath>
+        </defs>
+        <path d="M32 3 57 17.5v29L32 61 7 46.5v-29Z" fill="url(#lg)"/>
+        <ellipse cx="22.5" cy="23" rx="7.5" ry="5" transform="rotate(-28 22.5 23)" fill="#fff" fill-opacity=".85"/>
+        <ellipse cx="41.5" cy="23" rx="7.5" ry="5" transform="rotate(28 41.5 23)" fill="#fff" fill-opacity=".85"/>
+        <g clip-path="url(#lb)"><rect x="20" y="20" width="24" height="30" fill="#2A2116"/><rect x="20" y="28" width="24" height="4.5" fill="#FFC21A"/><rect x="20" y="37" width="24" height="4.5" fill="#FFC21A"/></g>
+        <circle cx="32" cy="19.5" r="4.5" fill="#2A2116"/>
+      </svg>
+      <span>Toc<span class="bee">Bee</span></span>
+    </a>
+    <nav class="nav" aria-label="Abschnitte">
+      <a href="#anleitung">Anleitung</a>
+      <a href="#versionen">Versionen</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#aenderungen">Änderungen</a>
+      <a href="https://github.com/MikeDan1/TocBee-releases/issues/new/choose">Feedback</a>
+    </nav>
+  </div>
+</header>
+
+<main id="start">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">Desktop-App für macOS</div>
+        <h1>Meetings vorbereiten, im <em>Takt</em> führen, sauber protokollieren.</h1>
+        <p class="lead">TocBee bündelt Traktanden, Links und Dokumente pro Meeting, zeigt im Meeting die Restzeit jedes Traktandums und nimmt Notizen, Beschlüsse und Aufgaben direkt auf. Alles bleibt lokal auf deinem Mac und funktioniert offline.</p>
+        <div class="badges">
+          <a class="pill version" id="current-version" href="https://github.com/MikeDan1/TocBee-releases/releases/latest/download/TocBee.dmg" style="text-decoration:none">Version 1.2.0 herunterladen</a>
+          <span class="pill">Offline</span>
+          <span class="pill">Jira &amp; SharePoint im internen Browser</span>
+          <span class="pill">Export: Markdown, PDF, E-Mail</span>
+        </div>
+      </div>
+      <div class="preview" aria-label="Beispielansicht des Timers">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="now">
+          <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="Restzeit 04:12 von 10 Minuten">
+            <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset=".5" stop-color="#FFB800"/><stop offset="1" stop-color="#EE8400"/></linearGradient></defs>
+            <circle cx="66" cy="66" r="56" fill="none" stroke="var(--surface-2)" stroke-width="10"/>
+            <circle cx="66" cy="66" r="56" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="351.9" stroke-dashoffset="204" transform="rotate(-90 66 66)"/>
+            <text x="66" y="70" text-anchor="middle">04:12</text>
+            <text class="sub" x="66" y="88" text-anchor="middle">von 10 Min.</text>
+          </svg>
+          <div>
+            <div class="eyebrow">Traktandum 2 von 4</div>
+            <h3 style="margin:4px 0 6px">Projektstatus</h3>
+            <p style="color:var(--fg-2);font-size:14px">Unterlagen: Jira-Board, Statusbericht.pdf</p>
+          </div>
+        </div>
+        <ol class="agenda">
+          <li class="done"><span class="d">✓</span><span>Begrüssung</span><span>5 Min.</span></li>
+          <li class="cur"><span class="d">2</span><span>Projektstatus</span><span>10 Min.</span></li>
+          <li><span class="d">3</span><span>Entscheide</span><span>20 Min.</span></li>
+          <li><span class="d">4</span><span>Nächste Schritte</span><span>10 Min.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <section id="anleitung">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Anleitung</div>
+        <h2>So arbeitest du mit TocBee</h2>
+        <p class="lead">Von der Installation bis zum versendeten Protokoll in sechs Schritten.</p>
+      </div>
+      <ol class="steps">
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Installieren</h3>
+          <p><a href="https://github.com/MikeDan1/TocBee-releases/releases/latest/download/TocBee.dmg">TocBee.dmg herunterladen</a> (immer die neueste Version), öffnen und TocBee in den Ordner <strong>Programme</strong> ziehen. Die DMG enthält auch diese Anleitung als PDF. Voraussetzung: Mac mit Apple-Chip (M1 oder neuer).</p>
+          <p>Beim ersten Start blockiert macOS die App einmalig. Ab macOS 15: <strong>Systemeinstellungen → Datenschutz &amp; Sicherheit → Dennoch öffnen</strong>. Bis macOS 14: Rechtsklick auf TocBee → <strong>Öffnen</strong>.</p></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Datenordner wählen</h3>
+          <p>Beim ersten Start wählst du einen Ordner, z. B. <strong>Dokumente/TocBee</strong>. Jedes Meeting liegt dort als eigener Ordner mit lesbarer <code>meeting.json</code> und den kopierten Dokumenten. Ist der Ordner leer, legt TocBee ein <strong>Demo-Meeting</strong> an, das alles Schritt für Schritt zeigt. Wechseln lässt sich der Ordner später unter <strong>Einstellungen</strong> (⌘,).</p></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Meeting vorbereiten</h3>
+          <ul>
+            <li><strong>Neues Meeting</strong>: Titel, Beginn, Dauer, Ort, Teilnehmende</li>
+            <li><strong>Traktanden</strong> mit Minuten – der Balken zeigt, ob alles in die Zeit passt</li>
+            <li><strong>Links</strong> und <strong>Dokumente</strong> (Kopie oder Verweis) dem ganzen Meeting oder einem bzw. mehreren Traktanden zuordnen – auch direkt beim Traktandum über <strong>Unterlagen</strong></li>
+            <li>Links öffnen in TocBee; ↗ öffnet sie im normalen Browser, «Immer im Browser öffnen» merkt sich das pro Link</li>
+          </ul></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Meeting durchführen</h3>
+          <ul>
+            <li><strong>Meeting starten</strong> → <strong>Start</strong></li>
+            <li>Der Ring wird gelb kurz vor Ablauf und rot beim Überziehen</li>
+            <li>Unterlagen des aktuellen Traktandums öffnen sich direkt in TocBee</li>
+            <li><strong>Mini-Timer</strong> bleibt über allen Fenstern, auch beim Bildschirmteilen</li>
+          </ul></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Protokollieren</h3>
+          <ul>
+            <li>Neben dem Timer: Notizen, Beschlüsse und Aufgaben (wer, bis wann)</li>
+            <li><strong>Protokoll</strong> → Vorschau zeigt das fertige Dokument</li>
+            <li>Export als <strong>Markdown</strong>, <strong>PDF</strong> oder <strong>E-Mail-Text</strong> für Outlook</li>
+          </ul></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Abschliessen und sichern</h3>
+          <ul>
+            <li>Nach <strong>Beenden</strong> steht das Meeting unter «Vergangene»; ohne Timer: <strong>Als durchgeführt markieren</strong></li>
+            <li>Meeting als <code>.tocbee</code>-Datei exportieren und wieder importieren</li>
+            <li>Sicherung: den Datenordner kopieren (z. B. Time Machine)</li>
+          </ul></li>
+      </ol>
+      <div class="extras">
+        <div class="panel">
+          <h3>Tastaturkürzel</h3>
+          <table class="keys">
+            <tr><td><kbd>⌘ N</kbd></td><td>Neues Meeting</td></tr>
+            <tr><td><kbd>⌘ F</kbd></td><td>Meetings suchen</td></tr>
+            <tr><td><kbd>⌘ 1</kbd></td><td>Übersicht</td></tr>
+            <tr><td><kbd>⇧ ⌘ I</kbd></td><td>Meeting importieren</td></tr>
+            <tr><td><kbd>Leertaste</kbd></td><td>Timer starten / pausieren</td></tr>
+            <tr><td><kbd>→</kbd> <kbd>←</kbd></td><td>Nächstes / vorheriges Traktandum</td></tr>
+          </table>
+        </div>
+        <div class="panel">
+          <h3>Gut zu wissen</h3>
+          <ul class="facts">
+            <li>Alles ausser dem internen Browser funktioniert ohne Internet.</li>
+            <li>Änderungen werden automatisch gespeichert.</li>
+            <li>Anmeldungen bei Jira und SharePoint bleiben im internen Browser erhalten.</li>
+            <li>Importieren überschreibt nie ein bestehendes Meeting.</li>
+            <li>Hell, dunkel oder automatisch nach macOS: wählbar unter Einstellungen (⌘,).</li>
+            <li>Updates (ab 1.2.0): Hinweis in der Seitenleiste, «Jetzt aktualisieren» – TocBee ersetzt sich selbst und startet neu.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="versionen">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Versionierung</div>
+        <h2>Was eine Versionsnummer verrät</h2>
+        <p class="lead">TocBee zählt Versionen nach dem Schema <strong>Major.Minor.Bugfix</strong>. An der Nummer siehst du sofort, wie gross ein Update ist.</p>
+      </div>
+      <div class="anatomy" aria-label="Beispiel Version 2.1.3">
+        <span class="seg major" data-level="major">2</span><span class="dot">.</span><span class="seg minor" data-level="minor">1</span><span class="dot">.</span><span class="seg patch" data-level="patch">3</span>
+      </div>
+      <div class="levels">
+        <article class="level" data-level="major">
+          <span class="tag major">Major</span>
+          <h3>Grosse neue Features</h3>
+          <p>Neue Fähigkeiten, die die Arbeitsweise verändern, etwa Sync im Team oder eine neue Plattform. Kann Umstellungen nötig machen.</p>
+          <span class="ex">1.4.2 → 2.0.0</span>
+        </article>
+        <article class="level" data-level="minor">
+          <span class="tag minor">Minor</span>
+          <h3>Verbesserungen</h3>
+          <p>Neue Funktionen und Verbesserungen, die sich ins Bestehende einfügen. Deine Daten und Abläufe bleiben unverändert.</p>
+          <span class="ex">1.0.3 → 1.1.0</span>
+        </article>
+        <article class="level" data-level="patch">
+          <span class="tag patch">Bugfix</span>
+          <h3>Fehlerbehebungen</h3>
+          <p>Korrekturen ohne neue Funktionen. Gefahrlos sofort installieren.</p>
+          <span class="ex">1.1.0 → 1.1.1</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Roadmap</div>
+        <h2>Was kommt</h2>
+        <p class="lead">Geplante Versionen in der vorgesehenen Reihenfolge. Die Planung kann sich nach den Erfahrungen im Alltag verschieben.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Roadmap filtern">
+        <button type="button" id="f-all" data-filter="all" aria-pressed="true">Alle</button>
+        <button type="button" id="f-major" data-filter="major" aria-pressed="false">Major</button>
+        <button type="button" id="f-minor" data-filter="minor" aria-pressed="false">Minor</button>
+        <button type="button" id="f-patch" data-filter="patch" aria-pressed="false">Bugfix</button>
+        <button type="button" id="f-idea" data-filter="idea" aria-pressed="false">Ideen</button>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <section id="aenderungen">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Änderungen</div>
+        <h2>Veröffentlichte Versionen</h2>
+      </div>
+      <div id="changelog" style="display:grid;gap:14px"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">TocBee · internes Werkzeug für Meeting-Vorbereitung, Timer und Protokoll · <a href="https://github.com/MikeDan1/TocBee-releases/issues/new/choose">Fehler melden oder Wunsch äussern</a> (öffentlich sichtbar, bitte ohne Kundendaten) · <a href="https://github.com/MikeDan1/TocBee-releases/milestones">Geplante Versionen</a></div>
+</footer>
+
+<script>
+// ---- Pflege: Roadmap und Änderungen hier anpassen ----
+// type: 'major' | 'minor' | 'patch' | 'idea'   status: 'released' | 'next' | 'planned' | 'idea'
+const ROADMAP = [
+  { v: '1.0.0', type: 'major', status: 'released', title: 'Erste Version (MVP)',
+    items: ['Meetings mit Traktanden, Links und Dokumenten vorbereiten', 'Timer pro Traktandum mit Mini-Timer', 'Protokoll mit Export als Markdown, PDF und E-Mail-Text', 'Interner Browser und PDF-Vorschau'] },
+  { v: '1.1.0', type: 'minor', status: 'released', title: 'Flexibler im Meeting',
+    items: ['Zwischen Traktanden wechseln, ohne den Timer zu starten; Klick auf ein Traktandum springt dorthin', 'Mehrzeilige Beschreibung pro Traktandum, formatiert im Timer'] },
+  { v: '1.2.0', type: 'minor', status: 'released', title: 'Updates direkt in der App',
+    items: ['TocBee findet neue Versionen selbst und zeigt die Änderungen an', 'Installation mit einem Klick, geprüft per Prüfsumme und Signatur', 'Nie während eines laufenden Meetings'] },
+  { v: '1.3.0', type: 'minor', status: 'released', title: 'Einstellungen und flexible Unterlagen',
+    items: ['Links und Dokumente mehreren Traktanden zuordnen, auch direkt beim Traktandum', 'Links wahlweise im normalen Browser öffnen', 'Einstellungen: Datenordner wechseln, hell/dunkel/automatisch', 'Demo-Meeting zum Kennenlernen'] },
+  { v: '1.3.x', type: 'patch', status: 'next', title: 'Bugfixes aus dem Alltagstest',
+    items: ['Anmeldung bei SharePoint im internen Browser absichern', 'Speichern-Dialoge für Markdown, PDF und .tocbee prüfen', 'Mini-Timer über Apps im Vollbild (z. B. Teams)'] },
+  { v: '1.4.0', type: 'minor', status: 'planned', title: 'Archiv',
+    items: ['Meetings archivieren statt löschen', 'Eigene Seite mit archivierten Meetings, jederzeit wiederherstellbar'] },
+  { v: '1.5.0', type: 'minor', status: 'planned', title: 'Protokoll für Kunden',
+    items: ['Protokoll-PDF anpassbar: welche Teile erscheinen', 'Eigenes Logo und Kopfzeile', 'Direkt an Kunden versendbar, ohne Nacharbeit'] },
+  { v: '1.6.0', type: 'minor', status: 'planned', title: 'Geführte Tour',
+    items: ['Tour durch TocBee beim ersten Start', 'Jederzeit über die Hilfe erneut starten'] },
+  { v: '1.7.0', type: 'minor', status: 'planned', title: 'Aufgabenübersicht',
+    items: ['Alle offenen Aufgaben aus allen Protokollen auf einen Blick', 'Filtern nach Person und Fälligkeit', 'Aufgaben direkt abhaken'] },
+  { v: '1.8.0', type: 'minor', status: 'planned', title: 'Vorlagen',
+    items: ['Vorlagen für wiederkehrende Meetings wie Jour fixe oder Steering Committee', 'Neues Meeting aus einer Vorlage mit einem Klick'] },
+  { v: '1.9.0', type: 'minor', status: 'planned', title: 'Teilnehmende strukturiert',
+    items: ['Name, E-Mail und Rolle pro Person', 'Protokoll-Versand an alle Teilnehmenden vorbereiten'] },
+  { v: '2.0.0', type: 'major', status: 'planned', title: 'TocBee mit Claude (MCP-Server)',
+    items: ['Meetings samt Traktanden von Claude anlegen lassen', 'Protokolle zusammenfassen und offene Aufgaben auswerten', 'Auswertung geplante gegen tatsächliche Zeit über alle Meetings'] },
+  { v: '3.0.0', type: 'major', status: 'planned', title: 'Sync und Team',
+    items: ['Datenordner über SharePoint oder OneDrive synchronisieren', 'Gleiche Meetings auf mehreren Geräten und im Team', 'Gleichzeitige Änderungen erkennen und zusammenführen'] },
+  { v: '4.0.0', type: 'major', status: 'planned', title: 'Windows-Version',
+    items: ['TocBee für Windows mit denselben Funktionen', 'Gemeinsamer Datenordner zwischen Mac und Windows'] },
+  { v: 'Ideen', type: 'idea', status: 'idea', title: 'Noch nicht eingeplant',
+    items: ['Meetings aus dem Outlook-Kalender übernehmen', 'Anbindung an Tocco und Jira', 'Protokoll als Word-Datei exportieren'] }
+]
+const CHANGELOG = [
+  { v: '1.3.0', type: 'minor', date: '24.11.2026', items: [
+    'Links und Dokumente mehreren Traktanden zuordnen – per Mehrfachauswahl oder direkt beim Traktandum über «Unterlagen»',
+    'Links im normalen Browser öffnen (↗) und pro Link «Immer im Browser öffnen»',
+    'Neue Einstellungen (⌘,): Datenordner wechseln (Meetings auf Wunsch mitnehmen) und Darstellung hell, dunkel oder automatisch',
+    'Demo-Meeting beim ersten Start und jederzeit über Hilfe oder Einstellungen',
+    'Menü Hilfe → «Fehler melden oder Wunsch äussern …»'
+  ] },
+  { v: '1.2.0', type: 'minor', date: '23.11.2026', items: [
+    'Updates direkt in der App: TocBee prüft beim Start und täglich, zeigt neue Versionen in der Seitenleiste an und installiert sie mit einem Klick (nie während eines laufenden Meetings); Menü «Nach Updates suchen …»'
+  ] },
+  { v: '1.1.0', type: 'minor', date: '23.11.2026', items: [
+    'Zwischen Traktanden wechseln, ohne den Timer zu starten: Weiter/Zurück und Pfeiltasten auch vor dem Start, Klick auf ein Traktandum springt direkt dorthin',
+    'Beschreibung pro Traktandum als mehrzeiliges Vorbereitungsfeld mit Markdown, formatiert im Timer, im Protokoll und im Export'
+  ] },
+  { v: '1.0.0', type: 'major', date: '23.11.2026', items: [
+    'Meetings anlegen, bearbeiten, duplizieren, löschen und als durchgeführt markieren',
+    'Traktanden mit Dauer und Reihenfolge, Links und Dokumente (Kopie oder Verweis) mit Zuordnung zu Traktanden',
+    'Timer mit Warnfarben, Zusammenfassung Geplant/Tatsächlich und Mini-Timer im Vordergrund',
+    'Protokoll mit Notizen, Beschlüssen und Aufgaben; Export als Markdown, PDF und E-Mail-Text',
+    'Interner Browser für Jira und SharePoint, PDF-Vorschau',
+    'Export und Import eines Meetings als .tocbee-Datei',
+    'Design «Honey» mit Hell- und Dunkelmodus, Menüleiste mit Tastaturkürzeln'
+  ] }
+]
+// ------------------------------------------------------
+
+const TYPE_LABEL = { major: 'Major', minor: 'Minor', patch: 'Bugfix', idea: 'Idee' }
+const STATUS_LABEL = { released: 'Veröffentlicht', next: 'Als Nächstes', planned: 'Geplant', idea: 'Idee' }
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+
+function renderRoadmap(filter) {
+  const list = document.getElementById('timeline')
+  const rows = ROADMAP.filter((r) => filter === 'all' || r.type === filter)
+  list.innerHTML = rows.length
+    ? rows.map((r) => `
+      <li class="rm ${r.status}">
+        <span class="node" aria-hidden="true"></span>
+        <div class="card">
+          <div class="head">
+            <span class="v">${esc(r.v)}</span>
+            <span class="tag ${r.type}">${TYPE_LABEL[r.type]}</span>
+            <span class="t">${esc(r.title)}</span>
+            <span class="st">${STATUS_LABEL[r.status]}</span>
+          </div>
+          <ul>${r.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+        </div>
+      </li>`).join('')
+    : '<li class="empty-filter">Für diesen Typ ist gerade nichts geplant.</li>'
+}
+
+function renderChangelog() {
+  document.getElementById('changelog').innerHTML = CHANGELOG.map((c) => `
+    <article class="log">
+      <div class="head"><span class="rm" style="display:contents"><span class="v" style="font:800 20px var(--font-display)">${esc(c.v)}</span></span>
+        <span class="tag ${c.type}">${TYPE_LABEL[c.type]}</span><span style="color:var(--fg-3);font-size:14px">${esc(c.date)}</span></div>
+      <ul>${c.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+    </article>`).join('')
+  const latest = CHANGELOG[0]
+  if (latest) document.getElementById('current-version').textContent = `Version ${latest.v} herunterladen`
+}
+
+document.querySelectorAll('.filters button').forEach((b) =>
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filters button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
+    renderRoadmap(b.dataset.filter)
+  })
+)
+
+// Versionsnummer und Erklärung gegenseitig hervorheben
+const highlight = (level) => document.querySelectorAll('[data-level]').forEach((el) => el.classList.toggle('on', el.dataset.level === level))
+document.querySelectorAll('[data-level]').forEach((el) => {
+  el.addEventListener('mouseenter', () => highlight(el.dataset.level))
+  el.addEventListener('mouseleave', () => highlight(null))
+})
+
+renderRoadmap('all')
+renderChangelog()
+</script>

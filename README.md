@@ -2,7 +2,9 @@
 
 TocBee ist eine Desktop-App für macOS, mit der du Meetings vorbereitest, mit Timer durchführst und das Protokoll direkt mitschreibst.
 
-Dieses Repository enthält **nur die fertigen Downloads und Updates**. Der Quellcode ist nicht öffentlich.
+Dieses Repository enthält **nur die fertigen Downloads und Updates** sowie die Website. Der Quellcode ist nicht öffentlich.
+
+🌐 **Website mit Anleitung und Roadmap: https://mikedan1.github.io/TocBee-releases/**
 
 ## ⬇️ Download
 
