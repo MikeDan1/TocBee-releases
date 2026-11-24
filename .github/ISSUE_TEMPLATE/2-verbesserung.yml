@@ -11,16 +11,18 @@ body:
     id: bereich
     attributes:
       label: Bereich
+      description: Bitte bewusst wählen – der erste Eintrag ist nur der Platzhalter.
       options:
-        - Installation
-        - Internet-Dienste (Jira, SharePoint)
+        - Allgemein / weiss nicht
         - Vorbereitung (Traktanden, Links, Dokumente)
         - Timer / Durchführung
         - Mini-Timer
         - Protokoll / Export
+        - Internet-Dienste (Jira, SharePoint)
+        - Einstellungen / Darstellung
         - Import / Export .tocbee
+        - Installation / Updates
         - Bedienung / Design
-        - Sonstiges
     validations:
       required: true
   - type: textarea
