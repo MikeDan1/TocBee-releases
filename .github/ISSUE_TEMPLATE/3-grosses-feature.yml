@@ -1,0 +1,31 @@
+name: Grosses neues Feature
+description: Neue Fähigkeit, die die Arbeitsweise verändert → Major-Version (z. B. 2.0.0)
+title: "[Feature] "
+labels: ["Major"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Dieses Issue ist öffentlich sichtbar.** Bitte keine Kundennamen, keine vertraulichen Inhalte und keine Screenshots mit Kundendaten.
+  - type: textarea
+    id: idee
+    attributes:
+      label: Idee
+      placeholder: z. B. Meetings direkt aus dem Outlook-Kalender übernehmen.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Welches Problem löst es?
+    validations:
+      required: true
+  - type: textarea
+    id: wer
+    attributes:
+      label: Wer profitiert?
+      placeholder: z. B. nur ich / das ganze Team / Kunden
+  - type: textarea
+    id: ablauf
+    attributes:
+      label: Wie stellst du dir den Ablauf vor?

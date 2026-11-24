@@ -1,0 +1,53 @@
+name: Verbesserung vorschlagen
+description: Etwas Bestehendes besser machen → Minor-Version (z. B. 1.3.0)
+title: "[Verbesserung] "
+labels: ["Minor", "Alltagstest"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Dieses Issue ist öffentlich sichtbar.** Bitte keine Kundennamen, keine vertraulichen Inhalte und keine Screenshots mit Kundendaten.
+  - type: dropdown
+    id: bereich
+    attributes:
+      label: Bereich
+      options:
+        - Installation
+        - Internet-Dienste (Jira, SharePoint)
+        - Vorbereitung (Traktanden, Links, Dokumente)
+        - Timer / Durchführung
+        - Mini-Timer
+        - Protokoll / Export
+        - Import / Export .tocbee
+        - Bedienung / Design
+        - Sonstiges
+    validations:
+      required: true
+  - type: textarea
+    id: heute
+    attributes:
+      label: Wie ist es heute?
+      placeholder: z. B. Ich muss für jede Aufgabe das Datum von Hand eintippen.
+    validations:
+      required: true
+  - type: textarea
+    id: wunsch
+    attributes:
+      label: Was wäre besser?
+      placeholder: z. B. Schnellauswahl «nächste Woche» beim Fälligkeitsdatum.
+    validations:
+      required: true
+  - type: textarea
+    id: nutzen
+    attributes:
+      label: Wofür hilft das?
+  - type: dropdown
+    id: prioritaet
+    attributes:
+      label: Wie wichtig?
+      options:
+        - hoch – würde ich täglich nutzen
+        - mittel – praktisch
+        - tief – nice to have
+    validations:
+      required: true

@@ -1,0 +1,75 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie erwartet → wird in einer Bugfix-Version behoben (z. B. 1.2.1)
+title: "[Fehler] "
+labels: ["Bugfix", "Alltagstest"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Dieses Issue ist öffentlich sichtbar.** Bitte keine Kundennamen, keine vertraulichen Inhalte und keine Screenshots mit Kundendaten.
+  - type: markdown
+    attributes:
+      value: Danke fürs Melden! Je genauer die Schritte, desto schneller ist der Fehler behoben.
+  - type: dropdown
+    id: bereich
+    attributes:
+      label: Bereich
+      options:
+        - Installation
+        - Internet-Dienste (Jira, SharePoint)
+        - Vorbereitung (Traktanden, Links, Dokumente)
+        - Timer / Durchführung
+        - Mini-Timer
+        - Protokoll / Export
+        - Import / Export .tocbee
+        - Bedienung / Design
+        - Sonstiges
+    validations:
+      required: true
+  - type: textarea
+    id: passiert
+    attributes:
+      label: Was ist passiert?
+      placeholder: z. B. Beim Klick auf «Als PDF speichern» erscheint kein Dialog.
+    validations:
+      required: true
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hast du erwartet?
+    validations:
+      required: true
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Schritte zum Nachstellen
+      value: |
+        1.
+        2.
+        3.
+  - type: dropdown
+    id: prioritaet
+    attributes:
+      label: Wie stark stört es?
+      options:
+        - hoch – blockiert die Arbeit
+        - mittel – stört, Umweg möglich
+        - tief – Schönheitsfehler
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: TocBee-Version
+      description: Menü TocBee → Über TocBee
+      placeholder: z. B. 1.2.0
+  - type: input
+    id: macos
+    attributes:
+      label: macOS-Version
+      placeholder: z. B. macOS 26.1
+  - type: textarea
+    id: bilder
+    attributes:
+      label: Screenshots
+      description: Bilder einfach hier hineinziehen – ohne Kundendaten (öffentlich sichtbar).

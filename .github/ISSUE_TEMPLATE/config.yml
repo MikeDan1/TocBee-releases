@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Kurzanleitung und Roadmap
+    url: https://github.com/MikeDan1/TocBee-releases#readme
+    about: Installation, Updates und Download der neuesten Version
