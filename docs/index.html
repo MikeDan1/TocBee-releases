@@ -264,8 +264,8 @@ footer { padding-block: 32px 48px; color: var(--fg-3); font-size: 14px; border-t
         <li class="step"><span class="n" aria-hidden="true"></span><h3>Installieren</h3>
           <p><a href="https://github.com/MikeDan1/TocBee-releases/releases/latest/download/TocBee.dmg">TocBee.dmg herunterladen</a> (immer die neueste Version), öffnen und TocBee in den Ordner <strong>Programme</strong> ziehen. Die DMG enthält auch diese Anleitung als PDF. Voraussetzung: Mac mit Apple-Chip (M1 oder neuer).</p>
           <p>Beim ersten Start blockiert macOS die App einmalig. Ab macOS 15: <strong>Systemeinstellungen → Datenschutz &amp; Sicherheit → Dennoch öffnen</strong>. Bis macOS 14: Rechtsklick auf TocBee → <strong>Öffnen</strong>.</p></li>
-        <li class="step"><span class="n" aria-hidden="true"></span><h3>Datenordner wählen</h3>
-          <p>Beim ersten Start wählst du einen Ordner, z. B. <strong>Dokumente/TocBee</strong>. Jedes Meeting liegt dort als eigener Ordner mit lesbarer <code>meeting.json</code> und den kopierten Dokumenten. Ist der Ordner leer, legt TocBee ein <strong>Demo-Meeting</strong> an, das alles Schritt für Schritt zeigt. Wechseln lässt sich der Ordner später unter <strong>Einstellungen</strong> (⌘,).</p></li>
+        <li class="step"><span class="n" aria-hidden="true"></span><h3>Datenordner und Ablage wählen</h3>
+          <p>Beim ersten Start wählst du einen Ordner, z. B. <strong>Dokumente/TocBee</strong>, und wie TocBee ablegt: <strong>lesbar</strong> – jedes Meeting als Markdown-Datei in einem eigenen Ordner, auch in Obsidian, einem Editor oder mit Claude bearbeitbar – oder <strong>verschlüsselt</strong> mit Passwort. Ist der Ordner leer, legt TocBee ein <strong>Demo-Meeting</strong> an, das alles Schritt für Schritt zeigt. Ordner und Ablage lassen sich später unter <strong>Einstellungen</strong> (⌘,) ändern.</p></li>
         <li class="step"><span class="n" aria-hidden="true"></span><h3>Meeting vorbereiten</h3>
           <ul>
             <li><strong>Neues Meeting</strong>: Titel, Beginn, Dauer, Ort, Teilnehmende</li>
@@ -289,6 +289,7 @@ footer { padding-block: 32px 48px; color: var(--fg-3); font-size: 14px; border-t
         <li class="step"><span class="n" aria-hidden="true"></span><h3>Abschliessen und sichern</h3>
           <ul>
             <li>Nach <strong>Beenden</strong> steht das Meeting unter «Vergangene»; ohne Timer: <strong>Als durchgeführt markieren</strong></li>
+            <li><strong>Archivieren</strong> räumt die Seitenleiste auf; das <strong>Archiv</strong> (⌘2) holt Meetings jederzeit zurück</li>
             <li>Meeting als <code>.tocbee</code>-Datei exportieren und wieder importieren</li>
             <li>Sicherung: den Datenordner kopieren (z. B. Time Machine)</li>
           </ul></li>
@@ -299,6 +300,7 @@ footer { padding-block: 32px 48px; color: var(--fg-3); font-size: 14px; border-t
           <table class="keys">
             <tr><td><kbd>⌘ N</kbd></td><td>Neues Meeting</td></tr>
             <tr><td><kbd>⌘ F</kbd></td><td>Meetings suchen</td></tr>
+            <tr><td><kbd>⌘ 2</kbd></td><td>Archiv</td></tr>
             <tr><td><kbd>⌘ 1</kbd></td><td>Übersicht</td></tr>
             <tr><td><kbd>⇧ ⌘ I</kbd></td><td>Meeting importieren</td></tr>
             <tr><td><kbd>Leertaste</kbd></td><td>Timer starten / pausieren</td></tr>
@@ -398,10 +400,10 @@ const ROADMAP = [
     items: ['TocBee findet neue Versionen selbst und zeigt die Änderungen an', 'Installation mit einem Klick, geprüft per Prüfsumme und Signatur', 'Nie während eines laufenden Meetings'] },
   { v: '1.3.0', type: 'minor', status: 'released', title: 'Einstellungen und flexible Unterlagen',
     items: ['Links und Dokumente mehreren Traktanden zuordnen, auch direkt beim Traktandum', 'Links wahlweise im normalen Browser öffnen', 'Einstellungen: Datenordner wechseln, hell/dunkel/automatisch', 'Demo-Meeting zum Kennenlernen'] },
-  { v: '1.3.x', type: 'patch', status: 'next', title: 'Bugfixes aus dem Alltagstest',
+  { v: '1.4.0', type: 'minor', status: 'released', title: 'Lesbare oder verschlüsselte Ablage, Archiv',
+    items: ['Meetings als Markdown-Dateien – auch in Obsidian, einem Editor oder mit Claude lesbar und bearbeitbar', 'Oder verschlüsselt mit Passwort, auf Wunsch im macOS-Schlüsselbund gemerkt', 'Änderungen von aussen erscheinen sofort, Konflikte werden erkannt', 'Meetings archivieren und zurückholen'] },
+  { v: '1.4.x', type: 'patch', status: 'next', title: 'Bugfixes aus dem Alltagstest',
     items: ['Anmeldung bei SharePoint im internen Browser absichern', 'Speichern-Dialoge für Markdown, PDF und .tocbee prüfen', 'Mini-Timer über Apps im Vollbild (z. B. Teams)'] },
-  { v: '1.4.0', type: 'minor', status: 'planned', title: 'Archiv',
-    items: ['Meetings archivieren statt löschen', 'Eigene Seite mit archivierten Meetings, jederzeit wiederherstellbar'] },
   { v: '1.5.0', type: 'minor', status: 'planned', title: 'Protokoll für Kunden',
     items: ['Protokoll-PDF anpassbar: welche Teile erscheinen', 'Eigenes Logo und Kopfzeile', 'Direkt an Kunden versendbar, ohne Nacharbeit'] },
   { v: '1.6.0', type: 'minor', status: 'planned', title: 'Geführte Tour',
@@ -422,6 +424,13 @@ const ROADMAP = [
     items: ['Meetings aus dem Outlook-Kalender übernehmen', 'Anbindung an Tocco und Jira', 'Protokoll als Word-Datei exportieren'] }
 ]
 const CHANGELOG = [
+  { v: '1.4.0', type: 'minor', date: '26.11.2026', items: [
+    'Ablage wählbar: lesbar als Markdown-Datei pro Meeting (sprechende Ordner, auch in Obsidian, einem Editor oder mit Claude bearbeitbar) oder verschlüsselt mit Passwort (AES-256, optional im macOS-Schlüsselbund)',
+    'Änderungen ausserhalb von TocBee erscheinen sofort; bei gleichzeitigen Änderungen fragt TocBee nach; unlesbare Dateien werden gemeldet und nie überschrieben',
+    'Meetings archivieren und zurückholen – eigene Seite «Archiv» (⌘2)',
+    'Löschen legt den Meeting-Ordner in den Papierkorb',
+    'Bisherige Meetings werden beim ersten Start einmalig umgewandelt, die alten Dateien bleiben als Sicherung'
+  ] },
   { v: '1.3.0', type: 'minor', date: '24.11.2026', items: [
     'Links und Dokumente mehreren Traktanden zuordnen – per Mehrfachauswahl oder direkt beim Traktandum über «Unterlagen»',
     'Links im normalen Browser öffnen (↗) und pro Link «Immer im Browser öffnen»',
